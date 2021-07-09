@@ -2,16 +2,18 @@ import express from "express";
 import "./config/mongo.js";
 // import "./config/passport.js";
 import routes from "./src/routes/index.js";
-// import bodyParser from "body-parser";
+import bodyParser from "body-parser";
 import cors from 'cors';
 import errorhandler from "errorhandler";
 import morgan from "morgan";
 // import session from "express-session";
-import passport from "passport";
+// import passport from "passport";
 import fs from 'fs';
 import https from 'https';
-import udp_server from "./src/services/UDP/index.js";
-import {NetwortkAddress} from "./src/services/STARTUP/index.js";
+import udp_server from "./src/services/udp/index.js";
+import {NetwortkAddress} from "./src/services/startup/index.js";
+import { terminalLOG__success, terminalLOG__white } from "./src/services/consolelog/console.js";
+
 
 // console.log(NetwortkAddress)
 
@@ -35,6 +37,7 @@ app.use(cors(corsOptions));
 //   );
 //   next();
 // });
+
 app.use(morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"'));
 
 // app.use(
@@ -48,19 +51,23 @@ app.use(morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:htt
 // app.use(passport.initialize());
 // app.use(passport.session());
 
-
 app.get("/", (req, res) => {
   res.send("iSter Smart Server!");
 });
+
+app.use(bodyParser.json()) // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use("/api/", routes);
 const HOST = process.env.HOST;
 const PORT = process.env.PORT;
 const PORT2 = process.env.PORT2;
 
+udp_server(NetwortkAddress.ip);
+
 app.listen(PORT2, HOST, () => {
   
-  console.log(`Listening on http://${HOST}:${PORT}/`);
+  terminalLOG__success(`Listening on http://${HOST}:${PORT2}/`);
 });
 
 var httpsServer = https.createServer({
@@ -70,11 +77,8 @@ var httpsServer = https.createServer({
   passphrase: 'admin'
 }, app)
 httpsServer.listen(process.env.PORT,()=>{
-  console.log(`Listening on https://${HOST}:${PORT}/`);
+  terminalLOG__white(`Listening on https://${HOST}:${PORT}/`);
 });
-
-udp_server(NetwortkAddress.ip);
-console.log(`Node Version: ${process.version}`)
 
 
 export default routes;

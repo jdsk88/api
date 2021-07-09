@@ -6,7 +6,7 @@ import {
   findUser,
   deleteUsers,
 } from "../services/users.js";
-import passport from "passport";
+// import passport from "passport";
 import { User } from "../models/users.js";
 import  token  from "morgan";
 
@@ -54,18 +54,18 @@ users.post('/register', (req, res, next) => {
 });
 
 // => config/passport.js
-users.post("/login", passport.authenticate("local"), function (req, res) {
-  // If this function gets called, authentication was successful.
-  // `req.user` contains the authenticated user.
-  console.log(req.body)
-  res.header("Access-Control-Allow-Origin", "*");
+// users.post("/login", passport.authenticate("local"), function (req, res) {
+//   // If this function gets called, authentication was successful.
+//   // `req.user` contains the authenticated user.
+//   console.log(req.body)
+//   res.header("Access-Control-Allow-Origin", "*");
 
-  res.redirect("/api/users/me"); // + req.user.username);
-});
+//   res.redirect("/api/users/me"); // + req.user.username);
+// });
 
-users.post("/confirmEmail", (req, res) => {
-  res.send(["user 1"]);
-});
+// users.post("/confirmEmail", (req, res) => {
+//   res.send(["user 1"]);
+// });
 
 users.post("/resetPassword", (req, res) => {
   res.send(["user 1"]);
